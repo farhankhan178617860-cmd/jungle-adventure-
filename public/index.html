@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0d1a10">
+  <title>Jungle Ruins – ज़ॉम्बी जंगल एडवेंचर</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" type="image/png" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="/style.css">
+  <!--IMPORTMAP-->
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- Lobby -->
+  <div id="lobby">
+    <div class="panel">
+      <h1>🧟 Jungle Ruins</h1>
+      <p class="sub">ज़ॉम्बी वाले जंगल में दोस्तों के साथ खोज · 2–4 खिलाड़ी ऑनलाइन</p>
+
+      <button id="btnInstall" hidden>📲 फ़ोन पर ऐप की तरह इंस्टॉल करो</button>
+      <p id="installHint" class="tips" hidden>iPhone पर: Safari में नीचे Share (⬆) दबाओ → <b>Add to Home Screen</b>। फिर होम स्क्रीन के आइकन से खोलो।</p>
+
+      <label for="name">तुम्हारा नाम</label>
+      <input id="name" maxlength="14" placeholder="जैसे: Rohan" autocomplete="off">
+
+      <button id="btnCreate" class="primary">नया रूम बनाओ</button>
+
+      <div class="or">या दोस्त के रूम में जुड़ो</div>
+      <div class="row">
+        <input id="code" maxlength="4" placeholder="कोड" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button id="btnJoin">जुड़ो</button>
+      </div>
+
+      <p id="lobbyMsg"></p>
+
+      <label for="quality" class="qlabel">ग्राफ़िक्स क्वालिटी</label>
+      <select id="quality">
+        <option value="auto">ऑटो (फ़ोन पर हल्की, कंप्यूटर पर अच्छी)</option>
+        <option value="high">अच्छी (परछाईं, घना जंगल)</option>
+        <option value="medium">मध्यम</option>
+        <option value="low">हल्की (सबसे स्मूद)</option>
+      </select>
+
+      <p class="tips" id="tipsDesktop">WASD चलो · Shift दौड़ो · Space कूदो · F या क्लिक = वार · माउस से देखो · Q/E कैमरा · स्क्रॉल ज़ूम</p>
+      <p class="tips" id="tipsTouch" hidden>बाएँ अँगूठे से जॉयस्टिक (किनारे तक = दौड़ना) · दाएँ अँगूठे से घूमकर देखो · ⚔ वार · ⤒ कूद। फ़ोन को आड़ा (landscape) करो।</p>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud" hidden>
+    <div id="roomBox" class="box">
+      <div class="rc">रूम कोड: <b id="roomCode"></b>
+        <button id="copyLink" title="दोस्त के लिए लिंक कॉपी करो">🔗</button>
+        <button id="btnFull" title="फ़ुलस्क्रीन">⛶</button>
+        <button id="btnChat" title="दोस्तों से बात करो (कीबोर्ड पर Enter)">💬</button>
+      </div>
+      <ul id="players"></ul>
+    </div>
+    <div id="hpBox" class="box">
+      <div id="hpBar"><i id="hpFill"></i></div>
+      <div class="hpRow"><span id="hpText"></span><span id="kills">☠ 0</span></div>
+    </div>
+    <div id="missionBox" class="box">
+      <div class="mh">मिशन</div>
+      <div id="missionList"></div>
+    </div>
+    <div id="chatLog"></div>
+    <div id="chatBox" hidden>
+      <form id="chatForm" autocomplete="off">
+        <input id="chatInput" maxlength="120" placeholder="दोस्तों को संदेश लिखो…" autocomplete="off" autocapitalize="sentences" enterkeyhint="send">
+        <button type="submit" id="chatSend" aria-label="भेजो">➤</button>
+        <button type="button" id="chatClose" aria-label="बंद करो">✕</button>
+      </form>
+      <div id="chatQuick"></div>
+    </div>
+    <div id="toast"></div>
+    <div id="clickHint" hidden>माउस पकड़ने के लिए गेम पर क्लिक करो (Esc से छोड़ो)</div>
+    <div id="rotate">↻ बेहतर खेलने के लिए फ़ोन आड़ा करो</div>
+    <div id="damage"></div>
+    <div id="death" hidden>
+      <div class="dt">💀 ज़ॉम्बी ने गिरा दिया</div>
+      <div class="dc">दोस्तों के सहारे <b id="deathSec">6</b> सेकंड में लौटोगे</div>
+    </div>
+  </div>
+
+  <!-- Touch controls (phones / tablets) -->
+  <div id="touch" hidden>
+    <div id="zoneMove"></div>
+    <div id="zoneLook"></div>
+    <div id="joy"><i id="joyKnob"></i></div>
+    <button id="btnJump" aria-label="कूदो">⤒</button>
+    <button id="btnAttack" aria-label="वार करो">⚔</button>
+  </div>
+
+  <!-- Win / disconnect overlay -->
+  <div id="overlay" hidden>
+    <div class="panel">
+      <h2 id="ovTitle"></h2>
+      <p id="ovBody"></p>
+      <button id="ovBtn" class="primary"></button>
+    </div>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
