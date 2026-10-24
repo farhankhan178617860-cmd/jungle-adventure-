@@ -1,0 +1,16 @@
+{
+  "name": "jungle-ruins-zombies",
+  "version": "0.2.0",
+  "description": "3D third-person multiplayer zombie jungle exploration game (Three.js in the browser + zero-dependency Node.js game server). Works on desktop and mobile.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node test/smoke.js && node test/client-stub.js && node test/client-stub.js touch"
+  },
+  "dependencies": {
+    "three": "0.170.0"
+  },
+  "engines": { "node": ">=20 <25" }
+}

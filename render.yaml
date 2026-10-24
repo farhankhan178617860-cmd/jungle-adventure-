@@ -1,0 +1,10 @@
+# Optional: Render "Blueprint". With this file in your GitHub repo you can use
+# Render -> New + -> Blueprint, and everything below is filled in for you.
+services:
+  - type: web
+    name: jungle-ruins-zombies
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
